@@ -1,6 +1,6 @@
 import java.util.HashSet;
 
-public class User {
+public class User implements Comparable {
     private int id;
     private HashSet<Integer> students; // List of students
     private int coach; // Coach for this user, users can only have one coach
@@ -55,4 +55,14 @@ public class User {
         this.peopleBelow = peopleBelow;
     }
 
+    @Override
+    public int compareTo(Object o) {
+        User user = (User) o;
+        if (peopleBelow < user.peopleBelow) {
+            return 1;
+        } else if (peopleBelow > user.peopleBelow) {
+            return -1;
+        }
+        return 0;
+    }
 }

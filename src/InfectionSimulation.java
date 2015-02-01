@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 public class InfectionSimulation {
 
@@ -73,8 +70,44 @@ public class InfectionSimulation {
         infectDown(root, version);
     }
 
-    public void limitedInfection() {
+    /*
+    Limited infection works as follows:
+    1. Take all the root users.
+    2. Sort the root users by the number of people below.
+    3. Look through the list of trees until the number of people below is just less than the target.
+    4. Start infecting trees until the target number is reached.
+    Returns the number of users that were actually infected.
+     */
+    public int limitedInfection(int targetNumber, int version) {
+        // Create a list of all the root users
+        ArrayList<User> roots = new ArrayList<User>();
+        for(User user : users.values()) {
+            if(user.getCoach() == -1) {
+                roots.add(user);
+            }
+        }
 
+        // Sort the list by the number of peopleBelow
+        Collections.sort(roots);
+
+        // Find the index where the number of peopleBelow is just below the target
+        int startIndex = 0;
+        while(roots.get(startIndex).getPeopleBelow() > targetNumber && startIndex < roots.size()) {
+            startIndex++;
+        }
+
+        int index = startIndex;
+
+        // From this index, infect each tree until the max value is reached
+        int numInfected = 0;
+        while(numInfected < targetNumber && index < roots.size()) {
+            infectDown(roots.get(index).getId(), version);
+            int deltaPeople = users.get(roots.get(index).getId()).getPeopleBelow() + 1; // The number of people just infected
+            numInfected += deltaPeople;
+            index++;
+        }
+
+        return numInfected;
     }
 
     /*
