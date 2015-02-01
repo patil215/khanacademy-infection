@@ -20,7 +20,8 @@ public class InfectionRunner {
     private static JTextField limitedInfectionTargetText;
 
     private static JButton generateButton;
-    private static JButton infectButton;
+    private static JButton infectTotalButton;
+    private static JButton infectLimitedButton;
     private static JButton resetButton;
 
     private static HashMap<Integer, User> graph;
@@ -54,7 +55,8 @@ public class InfectionRunner {
         limitedInfectionTargetText = new JTextField(4);
 
         generateButton = new JButton("Generate");
-        infectButton = new JButton("Infect");
+        infectTotalButton = new JButton("Total Infection");
+        infectLimitedButton = new JButton("Limited Infection");
         resetButton = new JButton("Reset");
 
         controlsPanel.add(numberUsersLabel);
@@ -64,7 +66,7 @@ public class InfectionRunner {
         controlsPanel.add(limitedInfectionTargetLabel);
         controlsPanel.add(limitedInfectionTargetText);
         controlsPanel.add(generateButton);
-        controlsPanel.add(infectButton);
+        controlsPanel.add(infectTotalButton);
         controlsPanel.add(resetButton);
 
         generateButton.addActionListener(new ActionListener() {
@@ -75,10 +77,10 @@ public class InfectionRunner {
             }
         });
 
-        infectButton.addActionListener(new ActionListener() {
+        infectTotalButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
+                graph = totalInfection();
             }
         });
 
@@ -100,6 +102,11 @@ public class InfectionRunner {
     private static HashMap<Integer, User> makeGraph(int numUsers, int numRelationships) {
         simulation = new InfectionSimulation(numUsers, numRelationships);
         simulation.generateRandomTree();
+        return simulation.getUsers();
+    }
+
+    private static HashMap<Integer, User> totalInfection() {
+        simulation.totalInfection(new Random().nextInt(simulation.getNumUsers()), 2);
         return simulation.getUsers();
     }
 
