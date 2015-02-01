@@ -1,7 +1,9 @@
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -42,7 +44,7 @@ public class InfectionRunner {
         contents.setLayout(new BoxLayout(contents, BoxLayout.PAGE_AXIS));
 
         controlsPanel = new JPanel(new FlowLayout());
-        controlsPanel.setMaximumSize(new Dimension(850, 0));
+        controlsPanel.setMaximumSize(new Dimension(950, 0));
 
         infectionPanel = new InfectionPanel();
 
@@ -73,76 +75,97 @@ public class InfectionRunner {
         generateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                graph = makeGraph(Integer.valueOf(numberUsersText.getText()), Integer.valueOf(numberRelationshipsText.getText()));
-                infectionPanel.visualize(graph);
+                if(isInteger(numberUsersText.getText()) && isInteger(numberRelationshipsText.getText())) {
+                    if(Integer.valueOf(numberUsersText.getText()) > 0 && Integer.valueOf(numberRelationshipsText.getText()) >= 0) {
+                        if (Integer.valueOf(numberUsersText.getText()) > Integer.valueOf(numberRelationshipsText.getText())) {
+                            makeGraph(Integer.valueOf(numberUsersText.getText()), Integer.valueOf(numberRelationshipsText.getText()));
+                            infectionPanel.visualize(graph);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "The number of users must be greater than the number of relationships.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please enter positive integers.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please enter integers for the number of users and relationships.");
+                }
             }
         });
 
         infectTotalButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                graph = totalInfection();
+                totalInfection();
             }
         });
 
         infectLimitedButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                graph = limitedInfection(Integer.valueOf(limitedInfectionTargetText.getText()));
+                if(isInteger(limitedInfectionTargetText.getText())) {
+                    if(Integer.valueOf(limitedInfectionTargetText.getText()) > 0) {
+                        if(Integer.valueOf(limitedInfectionTargetText.getText()) <= graph.size()) {
+                            int numInfected = limitedInfection(Integer.valueOf(limitedInfectionTargetText.getText()));
+                            JOptionPane.showMessageDialog(null, numInfected + " users were infected.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "The number of users to target must be less than or equal to the number of users.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please enter a positive integer.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please enter an integer for the target number for limited infection.");
+                }
             }
         });
 
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
+                graph = new HashMap<Integer, User>();
+                infectionPanel.visualize(graph);
             }
         });
 
         infectionPanel.setBackground(Color.WHITE);
         frame.add(controlsPanel);
         frame.add(infectionPanel);
-        frame.setSize(850, 850);
+        frame.setSize(950, 850);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
-    private static HashMap<Integer, User> makeGraph(int numUsers, int numRelationships) {
+    private static void makeGraph(int numUsers, int numRelationships) {
         simulation = new InfectionSimulation(numUsers, numRelationships);
         simulation.generateRandomTree();
-        return simulation.getUsers();
+        graph = simulation.getUsers();
     }
 
-    private static HashMap<Integer, User> totalInfection() {
+    private static void totalInfection() {
         simulation.totalInfection(new Random().nextInt(simulation.getNumUsers()), 2);
-        return simulation.getUsers();
+        graph = simulation.getUsers();
     }
 
-    private static HashMap<Integer, User> limitedInfection(int targetNumber) {
-        simulation.limitedInfection(targetNumber, 2);
-        return simulation.getUsers();
+    // Returns the number that ended up infected
+    private static int limitedInfection(int targetNumber) {
+        int numberInfected = simulation.limitedInfection(targetNumber, 2);
+        graph = simulation.getUsers();
+        return numberInfected;
     }
 
-   /* private static void runSimulation() {
-        int numUsers = 10;
-        int numRelationships = 3;
-        int versionToInfect = 2;
-        int limitedInfectionTarget = 5;
-        boolean limited = true;
+    private static boolean isInteger(String s) {
+        return isInteger(s, 10);
+    }
 
-        InfectionSimulation simulation = new InfectionSimulation(numUsers, numRelationships);
-        simulation.generateRandomTree();
-        simulation.printTree();
-
-        System.out.println("\n\nTime for Infection\n\n");
-
-        if(limited) {
-            int numInfected = simulation.limitedInfection(limitedInfectionTarget, versionToInfect);
-            System.out.println("Number infected: " + numInfected);
-        } else {
-            simulation.totalInfection(new Random().nextInt(simulation.getNumUsers()), versionToInfect);
+    private static boolean isInteger(String s, int radix) {
+        if(s.isEmpty()) return false;
+        for(int i = 0; i < s.length(); i++) {
+            if(i == 0 && s.charAt(i) == '-') {
+                if(s.length() == 1) return false;
+                else continue;
+            }
+            if(Character.digit(s.charAt(i),radix) < 0) return false;
         }
-
-        simulation.printTree();
-    } */
+        return true;
+    }
 }

@@ -24,19 +24,19 @@ public class InfectionSimulation {
         users = new HashMap<Integer, User>();
 
         // Assign each user an ID
-        for(int i = 0; i < numUsers; i++) {
+        for (int i = 0; i < numUsers; i++) {
             User user = new User(i);
             users.put(i, user);
         }
 
         int relationships = 0;
-        while(relationships < numRelationships) {
+        while (relationships < numRelationships) {
             // Randomly pick a pair of student and coach
             int toCoach = rand.nextInt(numUsers);
             int toStudent = rand.nextInt(numUsers);
 
             // If the student does not have a coach, and coach and student have the same parent, and the student is not his own coach
-            if(users.get(toStudent).getCoach() == -1 && root(toCoach) != root(toStudent) && toCoach != toStudent) {
+            if (users.get(toStudent).getCoach() == -1 && root(toCoach) != root(toStudent) && toCoach != toStudent) {
                 User coach = users.get(toCoach);
                 User student = users.get(toStudent);
 
@@ -48,7 +48,7 @@ public class InfectionSimulation {
                 int deltaStudents = student.getPeopleBelow() + 1;
                 // For each user above this student, update their peopleBelow count
                 int id = student.getCoach();
-                while(id != -1) {
+                while (id != -1) {
                     User user = users.get(id);
                     user.setPeopleBelow(user.getPeopleBelow() + deltaStudents);
                     id = user.getCoach();
@@ -66,6 +66,8 @@ public class InfectionSimulation {
     2. Infect all users below that root.
      */
     public void totalInfection(int startingID, int version) {
+        clearPreviousInfections();
+
         int root = root(startingID);
         infectDown(root, version);
     }
@@ -79,10 +81,12 @@ public class InfectionSimulation {
     Returns the number of users that were actually infected.
      */
     public int limitedInfection(int targetNumber, int version) {
+        clearPreviousInfections();
+
         // Create a list of all the root users
         ArrayList<User> roots = new ArrayList<User>();
-        for(User user : users.values()) {
-            if(user.getCoach() == -1) {
+        for (User user : users.values()) {
+            if (user.getCoach() == -1) {
                 roots.add(user);
             }
         }
@@ -92,7 +96,7 @@ public class InfectionSimulation {
 
         // Find the index where the number of peopleBelow is just below the target
         int startIndex = 0;
-        while(roots.get(startIndex).getPeopleBelow() > targetNumber && startIndex < roots.size()) {
+        while (roots.get(startIndex).getPeopleBelow() > targetNumber && startIndex < roots.size()) {
             startIndex++;
         }
 
@@ -100,7 +104,7 @@ public class InfectionSimulation {
 
         // From this index, infect each tree until the max value is reached
         int numInfected = 0;
-        while(numInfected < targetNumber && index < roots.size()) {
+        while (numInfected < targetNumber && index < roots.size()) {
             infectDown(roots.get(index).getId(), version);
             int deltaPeople = users.get(roots.get(index).getId()).getPeopleBelow() + 1; // The number of people just infected
             numInfected += deltaPeople;
@@ -110,11 +114,17 @@ public class InfectionSimulation {
         return numInfected;
     }
 
+    private void clearPreviousInfections() {
+        for (User user : users.values()) {
+            user.setVersion(0);
+        }
+    }
+
     /*
     Recursively go up the tree until the node at the top is reached.
      */
     private int root(int id) {
-        if(users.get(id).getCoach() != -1) {
+        if (users.get(id).getCoach() != -1) {
             return root(users.get(id).getCoach());
         }
         return id;
@@ -127,7 +137,7 @@ public class InfectionSimulation {
         users.get(id).setVersion(version);
         HashSet<Integer> students = users.get(id).getStudents();
         Iterator iter = students.iterator();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             infectDown((Integer) iter.next(), version);
         }
     }

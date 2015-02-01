@@ -30,7 +30,6 @@ public class InfectionPanel extends JPanel {
     }
 
     public void visualize(HashMap<Integer, User> users) {
-        System.out.println("test");
         positions = new HashMap<Integer, Point>();
         this.users = users;
     }
