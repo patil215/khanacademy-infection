@@ -63,8 +63,14 @@ public class InfectionSimulation {
         }
     }
 
-    public void totalInfection() {
-
+    /*
+    Total infection works as follows:
+    1. Find the root user of the tree the user is currently in.
+    2. Infect all users below that root.
+     */
+    public void totalInfection(int startingID, int version) {
+        int root = root(startingID);
+        infectDown(root, version);
     }
 
     public void limitedInfection() {
@@ -79,6 +85,18 @@ public class InfectionSimulation {
             return root(users.get(id).getCoach());
         }
         return id;
+    }
+
+    /*
+    Recursively infect all users below a given user.
+     */
+    private void infectDown(int id, int version) {
+        users.get(id).setVersion(version);
+        HashSet<Integer> students = users.get(id).getStudents();
+        Iterator iter = students.iterator();
+        while(iter.hasNext()) {
+            infectDown((Integer) iter.next(), version);
+        }
     }
 
     public int getNumUsers() {
