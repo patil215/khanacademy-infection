@@ -67,6 +67,7 @@ public class InfectionRunner {
         controlsPanel.add(limitedInfectionTargetText);
         controlsPanel.add(generateButton);
         controlsPanel.add(infectTotalButton);
+        controlsPanel.add(infectLimitedButton);
         controlsPanel.add(resetButton);
 
         generateButton.addActionListener(new ActionListener() {
@@ -81,6 +82,13 @@ public class InfectionRunner {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 graph = totalInfection();
+            }
+        });
+
+        infectLimitedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                graph = limitedInfection(Integer.valueOf(limitedInfectionTargetText.getText()));
             }
         });
 
@@ -107,6 +115,11 @@ public class InfectionRunner {
 
     private static HashMap<Integer, User> totalInfection() {
         simulation.totalInfection(new Random().nextInt(simulation.getNumUsers()), 2);
+        return simulation.getUsers();
+    }
+
+    private static HashMap<Integer, User> limitedInfection(int targetNumber) {
+        simulation.limitedInfection(targetNumber, 2);
         return simulation.getUsers();
     }
 
