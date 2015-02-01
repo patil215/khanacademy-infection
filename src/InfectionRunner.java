@@ -23,9 +23,12 @@ public class InfectionRunner {
     private static JButton infectButton;
     private static JButton resetButton;
 
-    public static void main(String args[]) {
-        runSimulation();
+    private static HashMap<Integer, User> graph;
 
+    private static InfectionSimulation simulation;
+
+    public static void main(String args[]) {
+        // runSimulation();
         generateFrame();
     }
 
@@ -66,7 +69,7 @@ public class InfectionRunner {
         generateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                HashMap<Integer, User> graph = makeGraph();
+                graph = makeGraph(Integer.valueOf(numberUsersText.getText()), Integer.valueOf(numberRelationshipsText.getText()));
                 infectionPanel.visualize(graph);
             }
         });
@@ -85,6 +88,7 @@ public class InfectionRunner {
             }
         });
 
+        infectionPanel.setBackground(Color.WHITE);
         frame.add(controlsPanel);
         frame.add(infectionPanel);
         frame.setSize(700, 700);
@@ -92,19 +96,13 @@ public class InfectionRunner {
         frame.setVisible(true);
     }
 
-    private static HashMap<Integer, User> makeGraph() {
-        int numUsers = 10;
-        int numRelationships = 3;
-        int versionToInfect = 2;
-        int limitedInfectionTarget = 5;
-        boolean limited = true;
-
-        InfectionSimulation simulation = new InfectionSimulation(numUsers, numRelationships);
+    private static HashMap<Integer, User> makeGraph(int numUsers, int numRelationships) {
+        simulation = new InfectionSimulation(numUsers, numRelationships);
         simulation.generateRandomTree();
         return simulation.getUsers();
     }
 
-    private static void runSimulation() {
+   /* private static void runSimulation() {
         int numUsers = 10;
         int numRelationships = 3;
         int versionToInfect = 2;
@@ -125,5 +123,5 @@ public class InfectionRunner {
         }
 
         simulation.printTree();
-    }
+    } */
 }

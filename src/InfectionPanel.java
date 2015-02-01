@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -11,6 +12,8 @@ public class InfectionPanel extends JPanel {
     HashMap<Integer, Point> positions; // Map each user ID to a position
 
     HashMap<Integer, User> users;
+
+    ArrayList<Relationship> relationships;
 
     Random rand;
 
@@ -55,8 +58,34 @@ public class InfectionPanel extends JPanel {
     }
 
     private void drawRelationships(Graphics2D graphics2D) {
+        if(users != null && users.size() > 0) {
+            relationships = new ArrayList<Relationship>();
+            // Iterate through the users and find each relationship. Add to HashMap
+            for (User user : users.values()) {
+                if (user.getCoach() != -1) {
+                    relationships.add(new Relationship(user.getId(), user.getCoach()));
+                }
+            }
 
+            // Iterate through the list of relationships and draw a line from point to point
+            for (Relationship relationship : relationships) {
+                Point a = positions.get(relationship.a);
+                Point b = positions.get(relationship.b);
+
+                graphics2D.drawLine(a.x + (USER_DIAMETER / 2), a.y + (USER_DIAMETER / 2), b.x + (USER_DIAMETER / 2), b.y + (USER_DIAMETER / 2));
+            }
+        }
     }
 
+
+
+    public class Relationship {
+        int a;
+        int b;
+        public Relationship(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+    }
 
 }
