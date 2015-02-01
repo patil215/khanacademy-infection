@@ -14,4 +14,45 @@ public class User {
         version = 0;
         peopleBelow = 0;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public HashSet<Integer> getStudents() {
+        return students;
+    }
+
+    public void setStudents(HashSet<Integer> students) {
+        this.students = students;
+    }
+
+    public int getCoach() {
+        return coach;
+    }
+
+    public void setCoach(int coach) {
+        this.coach = coach;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public int getPeopleBelow() {
+        return peopleBelow;
+    }
+
+    public void setPeopleBelow(int peopleBelow) {
+        this.peopleBelow = peopleBelow;
+    }
+
 }
