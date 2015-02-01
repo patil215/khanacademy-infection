@@ -41,12 +41,13 @@ public class InfectionRunner {
         contents.setLayout(new BoxLayout(contents, BoxLayout.PAGE_AXIS));
 
         controlsPanel = new JPanel(new FlowLayout());
+        controlsPanel.setMaximumSize(new Dimension(850, 0));
 
         infectionPanel = new InfectionPanel();
 
-        numberUsersLabel = new JLabel("Number of users:");
-        numberRelationshipsLabel = new JLabel("Number of student/coach relationships:");
-        limitedInfectionTargetLabel = new JLabel("Limited infection target number:");
+        numberUsersLabel = new JLabel("# Users:");
+        numberRelationshipsLabel = new JLabel("# Relationships:");
+        limitedInfectionTargetLabel = new JLabel("Target #:");
 
         numberUsersText = new JTextField(4);
         numberRelationshipsText = new JTextField(4);
@@ -91,7 +92,7 @@ public class InfectionRunner {
         infectionPanel.setBackground(Color.WHITE);
         frame.add(controlsPanel);
         frame.add(infectionPanel);
-        frame.setSize(700, 700);
+        frame.setSize(850, 850);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

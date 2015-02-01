@@ -9,6 +9,9 @@ public class InfectionPanel extends JPanel {
 
     private final int USER_DIAMETER = 10;
 
+    private final Color INFECTED = Color.BLUE;
+    private final Color REGULAR = Color.GREEN;
+
     HashMap<Integer, Point> positions; // Map each user ID to a position
 
     HashMap<Integer, User> users;
@@ -16,6 +19,8 @@ public class InfectionPanel extends JPanel {
     ArrayList<Relationship> relationships;
 
     Random rand;
+
+
 
     public InfectionPanel() {
         super();
@@ -50,17 +55,24 @@ public class InfectionPanel extends JPanel {
                 }
             }
         }
-
-        for(Point point : positions.values()) {
-            // Draw each user
-            graphics2D.drawOval(point.x, point.y, USER_DIAMETER, USER_DIAMETER);
+        if(users != null && users.size() > 0) {
+            for (User user : users.values()) {
+                // Draw each user
+                Point point = positions.get(user.getId());
+                if (user.getVersion() > 0) {
+                    graphics2D.setColor(INFECTED);
+                } else {
+                    graphics2D.setColor(REGULAR);
+                }
+                graphics2D.fillOval(point.x, point.y, USER_DIAMETER, USER_DIAMETER);
+            }
         }
     }
 
     private void drawRelationships(Graphics2D graphics2D) {
         if(users != null && users.size() > 0) {
             relationships = new ArrayList<Relationship>();
-            // Iterate through the users and find each relationship. Add to HashMap
+            // Iterate through the users and find each relationship. Add to ArrayList
             for (User user : users.values()) {
                 if (user.getCoach() != -1) {
                     relationships.add(new Relationship(user.getId(), user.getCoach()));
@@ -71,6 +83,13 @@ public class InfectionPanel extends JPanel {
             for (Relationship relationship : relationships) {
                 Point a = positions.get(relationship.a);
                 Point b = positions.get(relationship.b);
+                User userA = users.get(relationship.a);
+                User userB = users.get(relationship.b);
+                if(userA.getVersion() > 0 && userB.getVersion() > 0) {
+                    graphics2D.setColor(INFECTED);
+                } else {
+                    graphics2D.setColor(REGULAR);
+                }
 
                 graphics2D.drawLine(a.x + (USER_DIAMETER / 2), a.y + (USER_DIAMETER / 2), b.x + (USER_DIAMETER / 2), b.y + (USER_DIAMETER / 2));
             }
