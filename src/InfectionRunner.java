@@ -31,7 +31,6 @@ public class InfectionRunner {
     private static InfectionSimulation simulation;
 
     public static void main(String args[]) {
-        // runSimulation();
         generateFrame();
     }
 
