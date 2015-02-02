@@ -4,9 +4,9 @@ This is my solution to the Khan Academy Infection interview problem.
 
 ## Running the Code
 
-A JAR file is part of the repository. The easiest way to run the simulation would be to just download this file and run with Java.
+A JAR file is part of the repository. The easiest way to run the simulation would be to download this file and run with Java.
 
-The code is an IntelliJ IDEA project, so simply git-cloning the project and importing into IntelliJ, and running it should work. I used no external libraries, other than Swing for visualization which should be included in an up to date version of Java.
+The code is an IntelliJ IDEA project, so git-cloning, importing into IntelliJ, and running it should work. No external libraries were used.
 
 ## Basic Implementation
 

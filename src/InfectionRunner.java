@@ -130,7 +130,7 @@ public class InfectionRunner {
         infectionPanel.setBackground(Color.WHITE);
         frame.add(controlsPanel);
         frame.add(infectionPanel);
-        frame.setSize(950, 850);
+        frame.setSize(950, 700);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
