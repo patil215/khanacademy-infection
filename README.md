@@ -12,20 +12,20 @@ The code is an IntelliJ IDEA project, so simply git-cloning the project and impo
 
 My procedure for infection was fairly simple, and was as follows:
 
-1. First I generate a random set of user/coach trees.
-  * Start with a HashMap of given users which maps a user ID to a user.
-  * Each user has a list of students, a version of Khan Academy that they see, and a coach. The user also has an attribute called "peopleBelow". This is the number of students below them, and their students, etc. It's basically the number of users below them in the tree structure.
-  * Each user starts with no coach and no students.
-  * Coach/student relationships are randomly assigned to each user. Whenever a new user is added to the tree, every coach above that user has their peopleBelow attribute updated. What this means is that now we can easily and efficiently see the number of people in each tree after all the users have been assigned.
-2. Total infection works as follows:
-  * Randomly pick a user.
-  * Recursively travel up that user's tree until the root user is reached.
-  * Recursively infect all users below the root until the entire tree is infected.
-3. Limited infection works as follows:
-  * Create a list of all the users that are root users. This effectively creates a list of all the different trees since the tree can be traversed by just looking at the ID of the user's students.
-  * Sort this list by the number of peopleBelow, least to greatest. Now we have a list of trees.
-  * Iterate through the list of trees until one is found that is equal to or lesser than the target number of users to infect.
-  * Infect this tree, and keep infecting trees after it in the list until the target is reached or there are no more trees to infect.
+* Generating a random set of user/coach trees:
+  1. Start with a HashMap of given users which maps a user ID to a user.
+  2. Each user has a list of students, a version of Khan Academy that they see, and a coach. The user also has an attribute called "peopleBelow". This is the number of students below them, and their students, etc. It's basically the number of users below them in the tree structure.
+  3. Each user starts with no coach and no students.
+  4. Coach/student relationships are randomly assigned to each user. Whenever a new user is added to the tree, every coach above that user has their peopleBelow attribute updated. What this means is that now we can easily and efficiently see the number of people in each tree after all the users have been assigned.
+* Total infection works as follows:
+  1. Randomly pick a user.
+  2. Recursively travel up that user's tree until the root user is reached.
+  3. Recursively infect all users below the root until the entire tree is infected.
+* Limited infection works as follows:
+  1. Create a list of all the users that are root users. This effectively creates a list of all the different trees since the tree can be traversed by just looking at the ID of the user's students.
+  2. Sort this list by the number of peopleBelow, least to greatest. Now we have a list of trees.
+  3. Iterate through the list of trees until one is found that is equal to or lesser than the target number of users to infect.
+  4. Infect this tree, and keep infecting trees after it in the list until the target is reached or there are no more trees to infect.
 
 ## Visualization
 * I made my visualization using the Swing library in Java.
@@ -35,7 +35,9 @@ My procedure for infection was fairly simple, and was as follows:
 * Clicking "Limited Infection" will take whatever value was entered for "Target #" and try to infect as many users as possible.
 * Clicking "Reset" will clear the screen.
 
-Here's a screenshot of the simulation run with 100 users
+Here's a screenshot of the simulation run with 100 users, 75 relationships, and a target limited infection of 30:
+
+![Visualization Screenshot](/img/screenshot.png)
 
 ## Limitations
 * The problem was fairly open ended, so I assumed that each student can have only one coach. If each student has multiple coaches - say one coach across multiple trees, the code can be modified to work across this and still infect the correct people, but the strict coach to student tree heirarchy would no longer be valid.
@@ -43,3 +45,4 @@ Here's a screenshot of the simulation run with 100 users
 
 ## TODO
 * Currently, limited infection falls apart when there are a ton of users linked to the same tree and there are very few trees. For example, if the number of users is 100, and the number of relationships is 99, then all the users are in a tree. Since limited infection infects entire trees and not parts of them, this means that either all have to be infected or none. This can be solved by modifying the algorithm to backtrack to the last tree if the end of the list is reached and the target hasn't been filled, and then partially infect each level of that tree downwards. Of course, this means that at some level there will be coaches that have a different version from their students.
+* Generally, on smaller numbers of users, limited infection tends to be off by a margin much larger than with many users. This is also because limited infection only infects entire trees, as mentioned in the above bullet point.
